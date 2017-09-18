@@ -5,11 +5,17 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
 import static xcarpaccio.MyHttpServer.HttpResponse.ok;
 import static xcarpaccio.MyHttpServer.HttpResponse.error;
@@ -102,9 +108,43 @@ public class MyHttpServer
                 Order incomingOrder = objectMapper.readValue(requestBody, Order.class);
                 logger.log("Unserialized order: " + incomingOrder);
 
-//              double total = 42; // TODO compute me correctly or you'll get a penalty
-//              Result result = new Result(total);
-//              return ok(objectMapper.writeValueAsString(result)); // Use this to respond to an order with a total
+                // generate map of tax rates
+
+                File f = new File("countries.csv");
+
+                Map<String, Double> rates = new HashMap<>();
+
+                try{
+                    Scanner scan = new Scanner(f);
+
+                    while(scan.hasNext()){
+
+                        String line = scan.nextLine();
+
+                        String[] data = line.split(", ");
+
+                        rates.put(data[0], Double.parseDouble(data[1]));
+
+                    }
+
+                    // after loop, close scanner
+                    scan.close();
+
+
+                }catch (FileNotFoundException e){
+
+                    e.printStackTrace();
+                }
+
+
+
+
+                //double total = 42; // TODO compute me correctly or you'll get a penalty
+                //Result result = new Result(total);
+
+
+
+                //return ok(objectMapper.writeValueAsString(result)); // Use this to respond to an order with a total
 
                 return ok(""); // Use this if you don't want to respond to an order, without penalty
             } catch (IOException e) {
