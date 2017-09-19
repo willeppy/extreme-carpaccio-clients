@@ -131,6 +131,7 @@ public class MyHttpServer
                     scan.close();
                 }catch (FileNotFoundException e){
                     e.printStackTrace();
+                    return error();
                 }
 
                 Double total = TaxCalculator.calculateTaxes(incomingOrder, rates);
