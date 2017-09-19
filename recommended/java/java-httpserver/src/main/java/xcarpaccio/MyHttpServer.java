@@ -140,7 +140,6 @@ public class MyHttpServer
                 } else {
                     return ok("");
                 }
-
                 //double total = 42; // TODO compute me correctly or you'll get a penalty
                 //Result result = new Result(total);
 

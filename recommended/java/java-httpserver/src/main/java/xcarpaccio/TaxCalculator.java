@@ -14,28 +14,32 @@ public class TaxCalculator {
 			preTax += order.prices[i] * order.quantities[i];
 		}
 
-		postTax = preTax * rates.get(order.country);
+		if (order.country.equals("FR") && preTax < 500) {
+			return preTax;
+		}
 
-		if (reduction.equals("STANDARD")) {
-			switch (postTax) {
-				case postTax >= 50000:
-					total = postTax * 0.85;
-					break;
-				case postTax >= 10000:
-					total = postTax * 0.9;
-					break;
-				case postTax >= 7000:
-					total = postTax * 0.93;
-					break;
-				case postTax >= 5000:
-					total = postTax * 0.95;
-					break;
-				default:
-					total = postTax * 0.97;
-					break;
+		Double taxRate = (Double) rates.get(order.country);
+		postTax = preTax * taxRate;
+
+		if (order.reduction.equals("STANDARD")) {
+			if (postTax >= 50000) {
+				total = postTax * 0.85;
+			} else if (postTax >= 10000) {
+				total = postTax * 0.9;
+			} else if (postTax >= 7000) {
+				total = postTax * 0.93;
+			} else if (postTax >= 5000) {
+				total = postTax * 0.95;
+			} else if (postTax >= 1000) {
+				total = postTax * 0.97;
+			} else {
+				total = postTax;
 			}
+
 			return total;
-		} else {
+		} else if (order.reduction.equals("HALF PRICE")) {
+			return postTax * 0.5;
+		}else {
 			return null;
 		}
 	}
