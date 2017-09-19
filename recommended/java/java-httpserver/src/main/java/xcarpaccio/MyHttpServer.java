@@ -1,5 +1,7 @@
 package xcarpaccio;
 
+
+
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -124,20 +126,20 @@ public class MyHttpServer
                         String[] data = line.split(", ");
 
                         rates.put(data[0], Double.parseDouble(data[1]));
-
                     }
-
                     // after loop, close scanner
                     scan.close();
-
-
                 }catch (FileNotFoundException e){
-
                     e.printStackTrace();
                 }
 
-
-
+                Double total = TaxCalculator.calculateTaxes(incomingOrder, rates);
+                if (total != null) {
+                    Result result = new Result(total);
+                    return ok(objectMapper.writeValueAsString(result));
+                } else {
+                    return ok("");
+                }
 
                 //double total = 42; // TODO compute me correctly or you'll get a penalty
                 //Result result = new Result(total);
@@ -145,8 +147,6 @@ public class MyHttpServer
 
 
                 //return ok(objectMapper.writeValueAsString(result)); // Use this to respond to an order with a total
-
-                return ok(""); // Use this if you don't want to respond to an order, without penalty
             } catch (IOException e) {
                 logger.log(e);
                 return error();
